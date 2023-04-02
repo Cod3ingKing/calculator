@@ -54,7 +54,8 @@
 
              <button type="button" class="but" id="divide">/</button>
 
-             <button type="button" id="equals">(=)</button>
+             <button type="button" id="equals">(=)</button><br><br>
+             <button id="clear">Clear</button>
 
        </form>
 
@@ -72,10 +73,14 @@
 
        <script>
 
+
+
+
+
              // global variables for the numbers and operator
 
              let num1, num2, operator;
-
+            
  
 
              // function to update the number fields
@@ -93,25 +98,6 @@
 
              // function to handle number button clicks
 
-             function handleNumberClick(event) {
-
-                    let number = event.target.value;
-
-                    if (operator === undefined) {
-
-                           num1 = (num1 !== undefined) ? parseFloat(num1.toString() + number) : parseFloat(number);
-
-                           document.getElementById('num1').value = num1;
-
-                    } else {
-
-                           num2 = (num2 !== undefined) ? parseFloat(num2.toString() + number) : parseFloat(number);
-
-                           document.getElementById('num2').value = num2;
-
-                    }
-
-             };
 
  
 
@@ -121,7 +107,10 @@
 
                     operator = '+';
 
-                    document.getElementById('operator').textContent = operator;
+
+
+                    document.getElementById('operator').textContent = operator
+
 
              };
 
@@ -130,7 +119,7 @@
              // function to perform subtraction
 
              function subtract() {
-
+                    
                     operator = '-';
 
                     document.getElementById('operator').textContent = operator;
@@ -172,16 +161,7 @@
                     let result;
 
                 
-
-
              };
-
-
-
-
-
-
-
 
 
 const numButtons = document.querySelectorAll('.num');
@@ -189,52 +169,80 @@ const butButtons = document.querySelectorAll('.but');
 let inputString = '';
 let inputStringi ='';
 
-    
+// Set up a boolean variable to control code execution
+let buttonClicked = false;
 
 
 
 
 
-if(
-    document.getElementById('operator').innerHTML.includes('')
-    
-)
-{
+// Function to execute when button is clicked
 
 
-
+function handleClick() {
+  if (inputString.length > 0) {
     numButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const num = button.textContent;
-        let box = document.getElementById('num1');
+      // Remove event listeners from the number buttons
+      button.removeEventListener('click', handleClick);
+      button.removeEventListener('click', click);
 
-        inputString += num;
-        box.value = inputString;
-
-        console.log ('bye') 
-    });
-    });
-    
-    
-   
-
-} else {
-
-    numButtons.forEach(button => {
-    button.addEventListener('click', () => {
+      button.addEventListener('click', () => {
         const numBut = button.textContent;
         let boxi = document.getElementById('num2');
 
         inputStringi += numBut;
         boxi.value = inputStringi;
 
-       
-        
+        console.log('handle is clicked');
+      });
     });
-    });
+  }
+}
 
-};
-   
+
+
+
+function switchFunction() {
+  if (document.getElementById("operator").textContent.trim() === "") {
+    buttonClicked = true;
+    click();
+    console.log('yes');
+  } else {
+    buttonClicked = false;
+    handleClick();
+    console.log('no');
+  }
+}
+
+switchFunction();
+
+
+
+
+
+function click() {
+  numButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      if (buttonClicked) {
+        // Code block to execute if buttonClicked is true
+        const num = button.textContent;
+        let box = document.getElementById('num1');
+
+        inputString += num;
+        box.value = inputString;
+
+        console.log('bye');
+      } else {
+        // Code block to execute if buttonClicked is false
+        return console.log('Button clicked, but buttonClicked is false');
+      }
+    });
+  });
+}
+
+
+
+
 
     function calculate() {
   updateNumberFields();
@@ -259,17 +267,57 @@ if(
   document.getElementById('output').value = result;
 };
 
+function clear() {
+  // Reset all variables and input fields
+  inputString = '';
+  inputStringi = '';
+  operator = null;
+  num1 = null;
+  num2 = null;
+  buttonClicked = false;
+
+  document.getElementById('num1').value = '';
+  document.getElementById('num2').value = '';
+  document.getElementById('operator').textContent = '';
+  document.getElementById('output').value = '';
+  
+  // Re-add event listeners to the number buttons
+  numButtons.forEach(button => {
+    button.addEventListener('click', click);
+  });
+  
+  console.log('Calculator cleared.');
+}
+
+// add event listener for clear button
+document.getElementById('clear').addEventListener('click', clear);
+
+
+
 // add event listeners for operator buttons
 document.getElementById('add').addEventListener('click', add);
 document.getElementById('subtract').addEventListener('click', subtract);
 document.getElementById('multiply').addEventListener('click', multiply);
 document.getElementById('divide').addEventListener('click', divide);
 
+
+document.getElementById('add').addEventListener('click', switchFunction);
+document.getElementById('subtract').addEventListener('click', switchFunction);
+document.getElementById('multiply').addEventListener('click', switchFunction);
+document.getElementById('divide').addEventListener('click', switchFunction);
+
+
 // add event listener for equals button
 document.getElementById('equals').addEventListener('click', calculate);
 
             
            
+
+
+
+
+
+
 
              
              
